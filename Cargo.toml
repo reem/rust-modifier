@@ -1,0 +1,15 @@
+[package]
+
+name = "modifier"
+version = "0.0.1"
+authors = ["Jonathan Reem <jonathan.reem@gmail.com>"]
+
+[lib]
+
+name = "modifier"
+path = "src/lib.rs"
+
+[dev-dependencies.stainless]
+
+git = "https://github.com/reem/stainless"
+
