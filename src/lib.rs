@@ -24,6 +24,9 @@ pub trait Set {
     }
 
     /// Modify self through a mutable reference with the provided modifier.
+    ///
+    /// Note that this still causes a shallow copy of self, so can be
+    /// slow for types which are expensive to move.
     fn set_mut<M: Modifier<Self>>(&mut self, modifier: M) -> &mut Self {
         *self = modifier.modify(unsafe { ptr::read(&*self as *const _) });
         self
