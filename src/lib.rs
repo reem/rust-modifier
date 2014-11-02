@@ -1,6 +1,5 @@
 #![license = "MIT"]
-#![deny(missing_doc)]
-#![deny(warnings)]
+#![deny(missing_docs, warnings)]
 #![feature(phase, globs)]
 
 //! Overloadable modification through both owned and mutable references
