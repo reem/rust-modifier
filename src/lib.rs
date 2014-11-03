@@ -5,22 +5,21 @@
 //! Overloadable modification through both owned and mutable references
 //! to a type with minimal code duplication.
 
-use std::ptr;
-
 /// Allows use of the implemented type as an argument to Set::set.
 ///
 /// This allows types to be used for ad-hoc overloading of Set::set
 /// to perform complex updates to the parameter of Modifier.
 pub trait Modifier<F> {
     /// Modify `F` with self.
-    fn modify(self, F) -> F;
+    fn modify(self, &mut F);
 }
 
 /// A blanket trait providing the set and set_mut methods for all types.
 pub trait Set {
     /// Modify self using the provided modifier.
-    fn set<M: Modifier<Self>>(self, modifier: M) -> Self {
-        modifier.modify(self)
+    fn set<M: Modifier<Self>>(mut self, modifier: M) -> Self {
+        modifier.modify(&mut self);
+        self
     }
 
     /// Modify self through a mutable reference with the provided modifier.
@@ -28,7 +27,7 @@ pub trait Set {
     /// Note that this still causes a shallow copy of self, so can be
     /// slow for types which are expensive to move.
     fn set_mut<M: Modifier<Self>>(&mut self, modifier: M) -> &mut Self {
-        *self = modifier.modify(unsafe { ptr::read(&*self as *const _) });
+        modifier.modify(self);
         self
     }
 }
@@ -47,10 +46,9 @@ mod test {
     pub struct ModifyX(uint);
 
     impl Modifier<Thing> for ModifyX {
-        fn modify(self, mut thing: Thing) -> Thing {
+        fn modify(self, thing: &mut Thing) {
             let ModifyX(val) = self;
             thing.x = val;
-            thing
         }
     }
 
