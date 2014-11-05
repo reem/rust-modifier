@@ -17,6 +17,7 @@ pub trait Modifier<F> {
 /// A blanket trait providing the set and set_mut methods for all types.
 pub trait Set {
     /// Modify self using the provided modifier.
+    #[inline(always)]
     fn set<M: Modifier<Self>>(mut self, modifier: M) -> Self {
         modifier.modify(&mut self);
         self
@@ -26,6 +27,7 @@ pub trait Set {
     ///
     /// Note that this still causes a shallow copy of self, so can be
     /// slow for types which are expensive to move.
+    #[inline(always)]
     fn set_mut<M: Modifier<Self>>(&mut self, modifier: M) -> &mut Self {
         modifier.modify(self);
         self
