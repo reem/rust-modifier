@@ -1,15 +1,13 @@
 [package]
 
 name = "modifier"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["Jonathan Reem <jonathan.reem@gmail.com>"]
+description = "Fluid chaining APIs for both mutable ownership types."
+readme = "README.md"
+repository = "https://github.com/reem/rust-modifier"
+license = "MIT"
 
-[lib]
-
-name = "modifier"
-path = "src/lib.rs"
-
-[dev-dependencies.stainless]
-
-git = "https://github.com/reem/stainless"
+[dev-dependencies]
+stainless = "*"
 
