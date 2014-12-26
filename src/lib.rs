@@ -13,7 +13,10 @@ pub trait Modifier<F> {
     fn modify(self, &mut F);
 }
 
-/// A blanket trait providing the set and set_mut methods for all types.
+/// A trait providing the set and set_mut methods for all types.
+///
+/// Simply implement this for your types and they can be used
+/// with modifiers.
 pub trait Set {
     /// Modify self using the provided modifier.
     #[inline(always)]
@@ -23,17 +26,12 @@ pub trait Set {
     }
 
     /// Modify self through a mutable reference with the provided modifier.
-    ///
-    /// Note that this still causes a shallow copy of self, so can be
-    /// slow for types which are expensive to move.
     #[inline(always)]
     fn set_mut<M: Modifier<Self>>(&mut self, modifier: M) -> &mut Self {
         modifier.modify(self);
         self
     }
 }
-
-impl<T> Set for T {}
 
 #[cfg(test)]
 mod test {
@@ -43,6 +41,8 @@ mod test {
     pub struct Thing {
         x: uint
     }
+
+    impl Set for Thing {}
 
     pub struct ModifyX(uint);
 
@@ -54,7 +54,7 @@ mod test {
     }
 
     describe! modifier {
-        it "should support modifying through ModifyX using set and set_mut" {
+        it "should support modifying with set and set_mut" {
             let mut thing = Thing { x: 6 };
             thing.set_mut(ModifyX(8));
             assert_eq!(thing.x, 8);
