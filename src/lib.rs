@@ -33,6 +33,8 @@ pub trait Set {
     }
 }
 
+mod impls;
+
 #[cfg(test)]
 mod test {
     #[phase(plugin)] extern crate stainless;
@@ -61,6 +63,11 @@ mod test {
 
             let thing = thing.set(ModifyX(9));
             assert_eq!(thing.x, 9);
+        }
+
+        it "should support tuple chains" {
+            let thing = Thing { x: 8 }.set((ModifyX(5), ModifyX(112)));
+            assert_eq!(thing.x, 112);
         }
     }
 }
