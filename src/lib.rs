@@ -17,7 +17,7 @@ pub trait Modifier<F> {
 ///
 /// Simply implement this for your types and they can be used
 /// with modifiers.
-pub trait Set {
+pub trait Set : Sized {
     /// Modify self using the provided modifier.
     #[inline(always)]
     fn set<M: Modifier<Self>>(mut self, modifier: M) -> Self {
