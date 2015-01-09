@@ -1,5 +1,6 @@
 #![deny(missing_docs, warnings)]
-#![feature(phase, globs)]
+#![feature(plugin)]
+#![allow(unstable)]
 
 //! Overloadable modification through both owned and mutable references
 //! to a type with minimal code duplication.
@@ -37,16 +38,16 @@ mod impls;
 
 #[cfg(test)]
 mod test {
-    #[phase(plugin)] extern crate stainless;
+    #[plugin] extern crate stainless;
     pub use super::*;
 
     pub struct Thing {
-        x: uint
+        x: usize
     }
 
     impl Set for Thing {}
 
-    pub struct ModifyX(uint);
+    pub struct ModifyX(usize);
 
     impl Modifier<Thing> for ModifyX {
         fn modify(self, thing: &mut Thing) {
