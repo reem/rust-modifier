@@ -1,4 +1,6 @@
 #![deny(missing_docs, warnings)]
+#![feature(plugin)]
+#![allow(unstable)]
 
 //! Overloadable modification through both owned and mutable references
 //! to a type with minimal code duplication.
@@ -40,12 +42,12 @@ mod test {
     pub use super::*;
 
     pub struct Thing {
-        x: uint
+        x: usize
     }
 
     impl Set for Thing {}
 
-    pub struct ModifyX(uint);
+    pub struct ModifyX(usize);
 
     impl Modifier<Thing> for ModifyX {
         fn modify(self, thing: &mut Thing) {
