@@ -9,7 +9,7 @@
 ///
 /// This allows types to be used for ad-hoc overloading of Set::set
 /// to perform complex updates to the parameter of Modifier.
-pub trait Modifier<F> {
+pub trait Modifier<F: ?Sized> {
     /// Modify `F` with self.
     fn modify(self, &mut F);
 }
@@ -18,10 +18,10 @@ pub trait Modifier<F> {
 ///
 /// Simply implement this for your types and they can be used
 /// with modifiers.
-pub trait Set: Sized {
+pub trait Set {
     /// Modify self using the provided modifier.
     #[inline(always)]
-    fn set<M: Modifier<Self>>(mut self, modifier: M) -> Self {
+    fn set<M: Modifier<Self>>(mut self, modifier: M) -> Self where Self: Sized {
         modifier.modify(&mut self);
         self
     }
