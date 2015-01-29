@@ -1,6 +1,5 @@
 #![deny(missing_docs, warnings)]
 #![feature(plugin)]
-#![allow(unstable)]
 
 //! Overloadable modification through both owned and mutable references
 //! to a type with minimal code duplication.
