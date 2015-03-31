@@ -1,5 +1,4 @@
 #![deny(missing_docs, warnings)]
-#![feature(plugin)]
 
 //! Overloadable modification through both owned and mutable references
 //! to a type with minimal code duplication.
@@ -37,7 +36,6 @@ mod impls;
 
 #[cfg(test)]
 mod test {
-    #[plugin] extern crate stainless;
     pub use super::*;
 
     pub struct Thing {
@@ -55,20 +53,20 @@ mod test {
         }
     }
 
-    describe! modifier {
-        it "should support modifying with set and set_mut" {
-            let mut thing = Thing { x: 6 };
-            thing.set_mut(ModifyX(8));
-            assert_eq!(thing.x, 8);
+    #[test]
+    fn test_set_and_set_mut() {
+        let mut thing = Thing { x: 6 };
+        thing.set_mut(ModifyX(8));
+        assert_eq!(thing.x, 8);
 
-            let thing = thing.set(ModifyX(9));
-            assert_eq!(thing.x, 9);
-        }
+        let thing = thing.set(ModifyX(9));
+        assert_eq!(thing.x, 9);
+    }
 
-        it "should support tuple chains" {
-            let thing = Thing { x: 8 }.set((ModifyX(5), ModifyX(112)));
-            assert_eq!(thing.x, 112);
-        }
+    #[test]
+    fn test_tuple_chains() {
+        let thing = Thing { x: 8 }.set((ModifyX(5), ModifyX(112)));
+        assert_eq!(thing.x, 112);
     }
 }
 
