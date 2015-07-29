@@ -56,22 +56,19 @@ mod test {
 
     impl Modifier<Thing> for ModifyX {
         fn modify(self, thing: &mut Thing) {
-            let ModifyX(val) = self;
-            thing.x = val;
+            thing.x = self.0;
         }
     }
 
     impl Modifier<BiggerThing> for ModifyFirst {
         fn modify(self, bigger_thing: &mut BiggerThing) {
-            let ModifyFirst(val) = self;
-            bigger_thing.first = val;
+            bigger_thing.first = self.0;
         }
     }
 
     impl Modifier<BiggerThing> for ModifySecond {
         fn modify(self, bigger_thing: &mut BiggerThing) {
-            let ModifySecond(val) = self;
-            bigger_thing.second = val;
+            bigger_thing.second = self.0;
         }
     }
 
