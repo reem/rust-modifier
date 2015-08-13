@@ -42,14 +42,33 @@ mod test {
         x: usize
     }
 
+    pub struct BiggerThing {
+        first: usize,
+        second: usize
+    }
+
     impl Set for Thing {}
+    impl Set for BiggerThing {}
 
     pub struct ModifyX(usize);
+    pub struct ModifyFirst(usize);
+    pub struct ModifySecond(usize);
 
     impl Modifier<Thing> for ModifyX {
         fn modify(self, thing: &mut Thing) {
-            let ModifyX(val) = self;
-            thing.x = val;
+            thing.x = self.0;
+        }
+    }
+
+    impl Modifier<BiggerThing> for ModifyFirst {
+        fn modify(self, bigger_thing: &mut BiggerThing) {
+            bigger_thing.first = self.0;
+        }
+    }
+
+    impl Modifier<BiggerThing> for ModifySecond {
+        fn modify(self, bigger_thing: &mut BiggerThing) {
+            bigger_thing.second = self.0;
         }
     }
 
@@ -67,6 +86,13 @@ mod test {
     fn test_tuple_chains() {
         let thing = Thing { x: 8 }.set((ModifyX(5), ModifyX(112)));
         assert_eq!(thing.x, 112);
+    }
+
+    #[test]
+    fn test_tuple_different_fields() {
+        let bigger_thing = BiggerThing { first: 1, second: 2}.set((ModifyFirst(10), ModifySecond(12)));
+        assert_eq!(bigger_thing.first, 10);
+        assert_eq!(bigger_thing.second, 12);
     }
 }
 
