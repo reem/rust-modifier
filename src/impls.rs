@@ -2,7 +2,7 @@
 ///
 /// FIXME(reem): Move generation of this to a build script.
 
-use Modifier;
+use { Modifier, ModifierBox };
 
 impl<X, M1> Modifier<X> for (M1,)
 where M1: Modifier<X> {
@@ -83,5 +83,19 @@ where M: Modifier<X> {
             Some(m) => m.modify(x),
             None => (),
         }
+    }
+}
+
+impl<X, M: ?Sized> Modifier<X> for Box<M>
+where M: ModifierBox<X> {
+    fn modify(self, x: &mut X) {
+        self.modify_box(x)
+    }
+}
+
+impl<X, M> ModifierBox<X> for M
+where M: Modifier<X> {
+    fn modify_box(self: Box<Self>, x: &mut X) {
+        (*self).modify(x);
     }
 }

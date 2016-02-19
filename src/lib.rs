@@ -12,6 +12,49 @@ pub trait Modifier<F: ?Sized> {
     fn modify(self, &mut F);
 }
 
+/// Allows determining which modifier to use at runtime.
+///
+/// **NOTE** You do not need to implement this trait yourself, it is public as
+/// you will need to use it as the type for any boxed trait (see the type of
+/// `get_mod` in the example).
+///
+/// ```rust
+/// # use modifier::*;
+/// # #[derive(Eq, PartialEq, Debug)]
+/// struct U(u32);
+/// # impl Set for U {};
+///
+/// struct Increment;
+/// struct Decrement;
+///
+/// // Straightforward implementation details not shown for brevity.
+/// impl Modifier<U> for Increment
+/// # {
+/// #     fn modify(self, u: &mut U) {
+/// #         u.0 += 1;
+/// #     }
+/// # }
+/// impl Modifier<U> for Decrement
+/// # {
+/// #     fn modify(self, u: &mut U) {
+/// #         u.0 -= 1;
+/// #     }
+/// # }
+///
+/// let get_mod = |up| -> Box<ModifierBox<U>> {
+///     if up { Box::new(Increment) } else { Box::new(Decrement) }
+/// };
+///
+/// assert_eq!(U(1), U(0).set((get_mod(true), get_mod(false), get_mod(true))));
+/// ```
+///
+/// *(Yes this is a stupid example that could be done using an enum instead,
+/// real examples for this use case are quite complicated)*
+pub trait ModifierBox<F: ?Sized> {
+    /// Modify `F` with a boxed self.
+    fn modify_box(self: Box<Self>, &mut F);
+}
+
 /// A trait providing the set and set_mut methods for all types.
 ///
 /// Simply implement this for your types and they can be used
@@ -104,5 +147,23 @@ mod test {
         assert_eq!(bigger_thing.first, 10);
         assert_eq!(bigger_thing.second, 12);
     }
+
+    #[test]
+    fn test_boxed_modifiers() {
+        let get_mod = |b| -> Box<ModifierBox<Thing>> {
+            if b {
+                Box::new(ModifyX(1))
+            } else {
+                Box::new((ModifyX(2), ModifyX(3)))
+            }
+        };
+
+        let thing = Thing { x: 8 }.set(get_mod(true));
+        assert_eq!(thing.x, 1);
+
+        let thing = Thing { x: 8 }.set(get_mod(false));
+        assert_eq!(thing.x, 3);
+    }
+
 }
 
