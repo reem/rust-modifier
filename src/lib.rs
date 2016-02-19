@@ -83,6 +83,16 @@ mod test {
     }
 
     #[test]
+    fn test_optional_modifier() {
+        let get_mod = |b| if b { Some(ModifyX(5)) } else { None };
+        let thing = Thing { x: 8 }.set(get_mod(false));
+        assert_eq!(thing.x, 8);
+
+        let thing = thing.set(get_mod(true));
+        assert_eq!(thing.x, 5);
+    }
+
+    #[test]
     fn test_tuple_chains() {
         let thing = Thing { x: 8 }.set((ModifyX(5), ModifyX(112)));
         assert_eq!(thing.x, 112);

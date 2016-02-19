@@ -75,3 +75,13 @@ where M1: Modifier<X>,
         self.5.modify(x);
     }
 }
+
+impl<X, M> Modifier<X> for Option<M>
+where M: Modifier<X> {
+    fn modify(self, x: &mut X) {
+        match self {
+            Some(m) => m.modify(x),
+            None => (),
+        }
+    }
+}
