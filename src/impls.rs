@@ -4,6 +4,11 @@
 
 use Modifier;
 
+impl<X> Modifier<X> for () {
+    fn modify(self, _: &mut X) {
+    }
+}
+
 impl<X, M1> Modifier<X> for (M1,)
 where M1: Modifier<X> {
     fn modify(self, x: &mut X) {

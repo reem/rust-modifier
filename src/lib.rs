@@ -93,6 +93,12 @@ mod test {
     }
 
     #[test]
+    fn test_empty_tuple() {
+        let thing = Thing { x: 8 }.set(());
+        assert_eq!(thing.x, 8);
+    }
+
+    #[test]
     fn test_tuple_chains() {
         let thing = Thing { x: 8 }.set((ModifyX(5), ModifyX(112)));
         assert_eq!(thing.x, 112);
