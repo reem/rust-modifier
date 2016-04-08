@@ -32,6 +32,9 @@ pub trait Set {
     }
 }
 
+/// Wrap function `FnOnce(T) -> T` to allow it modify `&mut T` via `Modifier` trait
+pub struct ModifierFunction<F>(F);
+
 mod impls;
 
 #[cfg(test)]
@@ -93,6 +96,15 @@ mod test {
         let bigger_thing = BiggerThing { first: 1, second: 2}.set((ModifyFirst(10), ModifySecond(12)));
         assert_eq!(bigger_thing.first, 10);
         assert_eq!(bigger_thing.second, 12);
+    }
+    
+    
+    #[test]
+    fn test_function() {
+        let mut thing = Thing { x: 42 };
+        let function = |Thing{ x }| Thing { x: x * 2 };
+        thing.set_mut(ModifierFunction(function));
+        assert_eq!(thing.x, 84);
     }
 }
 
