@@ -3,6 +3,7 @@
 /// FIXME(reem): Move generation of this to a build script.
 
 use Modifier;
+use ModifierFunction;
 
 impl<X, M1> Modifier<X> for (M1,)
 where M1: Modifier<X> {
@@ -74,4 +75,17 @@ where M1: Modifier<X>,
         self.4.modify(x);
         self.5.modify(x);
     }
+}
+
+impl<X, F> Modifier<X> for ModifierFunction<F>
+    where F: FnOnce(X) -> X
+{
+    fn modify(self, x: &mut X) {
+        let ModifierFunction(f) = self;
+        unsafe {
+            let value = ::std::mem::replace(x, ::std::mem::uninitialized());
+            let trash = ::std::mem::replace(x, f(value));
+            ::std::mem::forget(trash);
+        }
+    }        
 }
